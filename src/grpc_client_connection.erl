@@ -75,7 +75,12 @@ new_stream(Connection) ->
                 Options::[stream_option()]) -> {ok, stream_id()}.
 new_stream(#{http_connection := Pid,
             client := Client}, Options) ->
-    Client:new_stream(Pid, Options).
+    try                
+        Client:new_stream(Pid, Options)
+    catch
+        _Type:Error ->
+            {error, #{error_type => client_new_stream, err => Error}}
+    end.
 
 rst_stream(#{http_connection := Pid, client := Client}, StreamId, ErrorCode) ->
     Client:rst_stream(Pid, StreamId, ErrorCode).
