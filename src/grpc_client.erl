@@ -257,8 +257,7 @@ unary(Connection, Message, Service, Rpc, Decoder, Options) ->
         stop_stream(Stream),
         Response
     catch
-        _Type:Error ->
+        _Type:_Error ->
             {error, #{error_type => client,
-                      status_message => <<"error creating stream err">>,
-                      error => Error}}
+                      status_message => <<"error creating stream err!!!">>}}
     end.
