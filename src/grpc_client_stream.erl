@@ -103,8 +103,8 @@ init({Connection, Service, Rpc, Encoder, Options}) ->
     try
         {ok, new_stream(Connection, Service, Rpc, Encoder, Options)}
     catch
-        _Class:Error ->
-            Message = #{status_message => <<"error creating stream (debug2)">>, err => Error},
+        Class:Error ->
+            Message = #{status_message => <<"error creating stream (debug2)">>, err => Error, class => Class},
             {stop, Message}
     end.
 
