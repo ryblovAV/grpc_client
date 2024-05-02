@@ -245,11 +245,11 @@ new_stream(Connection, Service, Rpc, Encoder, Options) ->
             metadata => Metadata,
             compression => Compression,
             buffer => <<>>}
-    catch
-        _Type:Error ->
-            {error, #{error_type => grpc_client_stream_new_stream, err => Error}}
+    catch C:E ->
+        io:format("Exception ~p:~p~nStacktrace: ~p~n", [C, E, erlang:get_stacktrace()]),
+        halt(1)
     end.
-    
+            
 
 send_msg(#{stream_id := StreamId,
            connection := Connection,
