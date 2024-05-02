@@ -223,15 +223,16 @@ terminate(_Reason, _State) ->
 %% internal methods
 
 new_stream(Connection, Service, Rpc, Encoder, Options) ->
-    Compression = proplists:get_value(compression, Options, none),
-    Metadata = proplists:get_value(metadata, Options, #{}),
-    TransportOptions = proplists:get_value(http2_options, Options, []),
-    {ok, StreamId} = grpc_client_connection:new_stream(Connection, TransportOptions),
-    RpcDef = Encoder:find_rpc_def(Service, Rpc),
-    %% the gpb rpc def has 'input', 'output' etc.
-    %% All the information is combined in 1 map,
-    %% which is is the state of the gen_server.
-    RpcDef#{stream_id => StreamId,
+    try
+        Compression = proplists:get_value(compression, Options, none),
+        Metadata = proplists:get_value(metadata, Options, #{}),
+        TransportOptions = proplists:get_value(http2_options, Options, []),
+        {ok, StreamId} = grpc_client_connection:new_stream(Connection, TransportOptions),
+        RpcDef = Encoder:find_rpc_def(Service, Rpc),
+        %% the gpb rpc def has 'input', 'output' etc.
+        %% All the information is combined in 1 map,
+        %% which is is the state of the gen_server.
+        RpcDef#{stream_id => StreamId,
             package => [],
             service => Service,
             rpc => Rpc,
@@ -243,7 +244,12 @@ new_stream(Connection, Service, Rpc, Encoder, Options) ->
             headers_sent => false,
             metadata => Metadata,
             compression => Compression,
-            buffer => <<>>}.
+            buffer => <<>>}
+    catch
+        _Type:Error ->
+            {error, #{error_type => grpc_client_stream_new_stream, err => Error}}
+    end.
+    
 
 send_msg(#{stream_id := StreamId,
            connection := Connection,
