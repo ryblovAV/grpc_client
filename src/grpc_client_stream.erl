@@ -22,6 +22,8 @@
 %% of the status of the http2 stream and it buffers responses in a queue.
 -module(grpc_client_stream).
 
+-include_lib("kernel/include/logger.hrl").
+
 -behaviour(gen_server).
 
 -export([new/5,
@@ -231,6 +233,7 @@ new_stream(Connection, Service, Rpc, Encoder, Options) ->
     %% the gpb rpc def has 'input', 'output' etc.
     %% All the information is combined in 1 map,
     %% which is is the state of the gen_server.
+    ?LOG_INFO(#{what => debug_new_stream}),           
     RpcDef#{stream_id => StreamId,
         package => [],
         service => Service,
