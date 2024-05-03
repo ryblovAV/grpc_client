@@ -334,6 +334,7 @@ encode(#{encoder := Encoder,
     %% RequestData = Encoder:encode_msg(Map, MsgType),
     try Encoder:encode_msg(Map, MsgType) of
         RequestData ->
+            ?LOG_INFO(#{what => debug_encode, request_date => RequestData, map => Map, msgType => MsgType}),
             maybe_compress(RequestData, CompressionMethod)
     catch
         error:function_clause ->
