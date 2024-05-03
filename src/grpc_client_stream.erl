@@ -233,7 +233,7 @@ new_stream(Connection, Service, Rpc, Encoder, Options) ->
     %% the gpb rpc def has 'input', 'output' etc.
     %% All the information is combined in 1 map,
     %% which is is the state of the gen_server.
-    ?LOG_INFO(#{what => debug_new_stream}),           
+    ?LOG_INFO(#{what => debug_new_stream, service => Service, stream_id => StreamId}),
     RpcDef#{stream_id => StreamId,
         package => [],
         service => Service,
