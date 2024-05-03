@@ -277,6 +277,7 @@ send_msg(#{stream_id := StreamId,
             {true, _} ->
                 closed
         end,
+    ?LOG_INFO(#{what => debug_send_msg, encoded => Encoded, opts => Opts, stream_id => StreamId, connection => Connection}),
     ok = grpc_client_connection:send_body(Connection, StreamId, Encoded, Opts),
     Stream#{headers_sent => true,
             state => NewState}.
