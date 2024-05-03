@@ -26,6 +26,8 @@
 %%
 -module(grpc_client).
 
+-include_lib("kernel/include/logger.hrl").
+
 -export([compile/1, compile/2,
          connect/3, connect/4,
          new_stream/4, new_stream/5,
@@ -253,6 +255,7 @@ unary(Connection, Message, Service, Rpc, Decoder, Options) ->
     try
         {ok, Stream} = new_stream(Connection, Service,
                                   Rpc, Decoder, StreamOptions),
+        ?LOG_INFO(#{what => debug_unary, stream => Stream, decoder => Decoder}),
         Response = grpc_client_stream:call_rpc(Stream, Message, Timeout),
         stop_stream(Stream),
         Response
